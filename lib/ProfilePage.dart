@@ -93,13 +93,13 @@ class _ProfilePageState extends State<ProfilePage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully!')),
+          SnackBar(content: Text('Profil mis à jour avec succès !')),
         );
       }
     } catch (e) {
-      print('Failed to update profile: $e');
+      print('Échec de la mise à jour du profil : $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile: $e')),
+        SnackBar(content: Text('Échec de la mise à jour du profil : $e')),
       );
     }
   }
@@ -108,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Profil'),
         centerTitle: true,
         backgroundColor: custom_green,
       ),
@@ -143,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
             TextField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'Full Name',
+                labelText: 'Nom Complet',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.person),
               ),
@@ -152,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
             TextField(
               controller: _phoneController,
               decoration: const InputDecoration(
-                labelText: 'Phone Number',
+                labelText: 'Numéro de Téléphone',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.phone),
               ),
@@ -170,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
             TextField(
               controller: _passwordController,
               decoration: const InputDecoration(
-                labelText: 'Password',
+                labelText: 'Mot de Passe',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.lock),
               ),
@@ -179,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () => _updateProfile(context),
-              child: const Text('Save Changes'),
+              child: const Text('Sauvegarder les Modifications'),
             ),
           ],
         ),

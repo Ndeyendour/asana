@@ -1,4 +1,4 @@
-import 'package:asana/screen/login_page.dart';
+import 'package:asana/screen/background_image_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginPage(),
+      home: BackgroundImageScreen(),
     );
   }
 }

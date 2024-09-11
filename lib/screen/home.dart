@@ -42,7 +42,7 @@ class _Home_ScreenState extends State<Home_Screen> {
     if (snapshot.exists) {
       Map<dynamic, dynamic>? userData = snapshot.value as Map?;
       setState(() {
-        _fullName = userData?['name'] ?? 'User';
+        _fullName = userData?['name'] ?? 'Utilisateur';
       });
     }
   }
@@ -56,7 +56,7 @@ class _Home_ScreenState extends State<Home_Screen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(content: Text('Erreur lors de la déconnexion : $e')),
       );
     }
   }
@@ -92,7 +92,7 @@ class _Home_ScreenState extends State<Home_Screen> {
         ),
         title: _user != null
             ? Text(
-                'Welcome, ${_fullName ?? 'User'}!',
+                'Bienvenue, ${_fullName ?? 'Utilisateur'} !',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    'isDone',
+                    'Terminées',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade500,

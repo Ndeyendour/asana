@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:asana/const/colors.dart';
 import 'package:asana/data/firestor.dart';
 import 'package:asana/model/notes_model.dart';
-import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class Edit_Screen extends StatefulWidget {
-  final Note note; // Change here: changed _note to note and removed taskId
+  final Note note;
 
   const Edit_Screen(this.note, {super.key});
 
@@ -14,18 +13,21 @@ class Edit_Screen extends StatefulWidget {
 }
 
 class _Edit_ScreenState extends State<Edit_Screen> {
-  TextEditingController? title;
-  TextEditingController? subtitle;
+  TextEditingController? titleController;
+  TextEditingController? subtitleController;
 
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
-  int indexx = 0;
+  int selectedImageIndex = 0;
+  String selectedPriority = 'Moyenne'; // Valeur par défaut pour la priorité
 
   @override
   void initState() {
     super.initState();
-    title = TextEditingController(text: widget.note.title);
-    subtitle = TextEditingController(text: widget.note.subtitle);
+    titleController = TextEditingController(text: widget.note.title);
+    subtitleController = TextEditingController(text: widget.note.subtitle);
+    selectedImageIndex = widget.note.image;
+    selectedPriority = widget.note.priority; // Utilisez la priorité de la note ou une valeur par défaut
   }
 
   @override
@@ -36,13 +38,15 @@ class _Edit_ScreenState extends State<Edit_Screen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            title_widgets(),
+            titleWidget(),
             const SizedBox(height: 20),
-            subtitle_widget(),
+            subtitleWidget(),
             const SizedBox(height: 20),
-            imagess(),
+            priorityWidget(), // Ajoutez ce widget
             const SizedBox(height: 20),
-            button()
+            images(),
+            const SizedBox(height: 20),
+            button(),
           ],
         ),
       ),
@@ -61,13 +65,14 @@ class _Edit_ScreenState extends State<Edit_Screen> {
           onPressed: () {
             Firestore_Datasource().Update_Note(
               widget.note.id,
-              indexx,
-              title!.text,
-              subtitle!.text,
+              selectedImageIndex,
+              titleController!.text,
+              subtitleController!.text,
+              selectedPriority, // Passez la priorité ici
             );
             Navigator.pop(context);
           },
-          child: const Text('Update task'),
+          child: const Text('Modifier'),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -77,13 +82,13 @@ class _Edit_ScreenState extends State<Edit_Screen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel'),
+          child: const Text('Retour'),
         ),
       ],
     );
   }
 
-  SizedBox imagess() {
+  SizedBox images() {
     return SizedBox(
       height: 180,
       child: ListView.builder(
@@ -93,7 +98,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
           return GestureDetector(
             onTap: () {
               setState(() {
-                indexx = index;
+                selectedImageIndex = index;
               });
             },
             child: Padding(
@@ -103,7 +108,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     width: 2,
-                    color: indexx == index ? custom_green : Colors.grey,
+                    color: selectedImageIndex == index ? custom_green : Colors.grey,
                   ),
                 ),
                 width: 140,
@@ -121,7 +126,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     );
   }
 
-  Widget title_widgets() {
+  Widget titleWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
@@ -130,7 +135,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: TextField(
-          controller: title,
+          controller: titleController,
           focusNode: _focusNode1,
           style: const TextStyle(fontSize: 18, color: Colors.black),
           decoration: InputDecoration(
@@ -156,7 +161,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     );
   }
 
-  Padding subtitle_widget() {
+  Padding subtitleWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
@@ -166,7 +171,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
         ),
         child: TextField(
           maxLines: 3,
-          controller: subtitle,
+          controller: subtitleController,
           focusNode: _focusNode2,
           style: const TextStyle(fontSize: 18, color: Colors.black),
           decoration: InputDecoration(
@@ -185,6 +190,43 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                 color: custom_green,
                 width: 2.0,
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding priorityWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: DropdownButtonFormField<String>(
+        value: selectedPriority,
+        items: [
+          DropdownMenuItem(value: 'Haute', child: Text('Haute')),
+          DropdownMenuItem(value: 'Moyenne', child: Text('Moyenne')),
+          DropdownMenuItem(value: 'Faible', child: Text('Faible')),
+        ],
+        onChanged: (value) {
+          setState(() {
+            selectedPriority = value ?? 'Moyenne'; // Valeur par défaut
+          });
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          hintText: 'Priority',
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: Color(0xffc5c5c5),
+              width: 2.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: custom_green,
+              width: 2.0,
             ),
           ),
         ),

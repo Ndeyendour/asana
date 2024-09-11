@@ -5,10 +5,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:asana/model/notes_model.dart';
 import 'package:uuid/uuid.dart';
+
 final firebaseApp = Firebase.app();
 final rtdb = FirebaseDatabase.instanceFor(
     app: firebaseApp,
     databaseURL: 'https://todo-3aa81-default-rtdb.firebaseio.com/');
+
 class Firestore_Datasource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -26,7 +28,8 @@ class Firestore_Datasource {
     }
   }
 
-  Future<bool> AddNote(String subtitle, String title, int image) async {
+  Future<bool> AddNote(
+      String subtitle, String title, int image, String priority) async {
     try {
       var uuid = const Uuid().v4();
       DateTime data = DateTime.now();
@@ -42,6 +45,7 @@ class Firestore_Datasource {
         'image': image,
         'time': '${data.hour}:${data.minute}',
         'title': title,
+        'priority': priority, // Ajout du champ priorité
       });
       return true;
     } catch (e) {
@@ -61,6 +65,7 @@ class Firestore_Datasource {
           data['image'],
           data['title'],
           data['isDon'],
+          data['priority'], // Récupérer la priorité
         );
       }).toList();
       return notesList;
@@ -70,13 +75,19 @@ class Firestore_Datasource {
     }
   }
 
-  Stream<QuerySnapshot> stream(bool isDone) {
-    return _firestore
+  Stream<QuerySnapshot> stream(bool isDone, {String? priority}) {
+    var query = _firestore
         .collection('users')
         .doc(_auth.currentUser!.uid)
         .collection('notes')
-        .where('isDon', isEqualTo: isDone)
-        .snapshots();
+        .where('isDon', isEqualTo: isDone);
+
+    // Filtre par priorité si spécifiée
+    if (priority != null && priority.isNotEmpty) {
+      query = query.where('priority', isEqualTo: priority);
+    }
+
+    return query.snapshots();
   }
 
   Future<bool> isdone(String uuid, bool isDon) async {
@@ -95,7 +106,7 @@ class Firestore_Datasource {
   }
 
   Future<bool> Update_Note(
-      String uuid, int image, String title, String subtitle) async {
+      String uuid, int image, String title, String subtitle, String priority) async {
     try {
       DateTime data = DateTime.now();
       await _firestore
@@ -108,6 +119,7 @@ class Firestore_Datasource {
         'subtitle': subtitle,
         'title': title,
         'image': image,
+        'priority': priority, // Mettre à jour la priorité
       });
       return true;
     } catch (e) {

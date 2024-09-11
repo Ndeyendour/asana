@@ -24,7 +24,7 @@ class SignupPage extends StatelessWidget {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Passwords do not match!'),
+            content: Text('Les mots de passe ne correspondent pas'),
             backgroundColor: Colors.red,
           ),
         );
@@ -49,10 +49,10 @@ class SignupPage extends StatelessWidget {
         _showSignupSuccessDialog(context);
       }
     } catch (e) {
-      print('Signup failed: $e');
+      print('Échec de l\'inscription : $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Signup failed: $e'),
+          content: Text('Échec de l\'inscription : $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -64,13 +64,13 @@ class SignupPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Signup Success'),
-          content: const Text('Thank you for signing up!'),
+          title: const Text('Inscription réussie'),
+          content: const Text('Merci pour votre inscription !'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
-                Navigator.pop(context); // Go back to the previous page
+                Navigator.pop(context); // Fermer la boîte de dialogue
+                Navigator.pop(context); // Revenir à la page précédente
               },
               child: const Text('OK'),
             ),
@@ -84,102 +84,104 @@ class SignupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Signup'),
+        title: const Text('Inscription'),
         elevation: 0.0,
         centerTitle: true,
         backgroundColor: custom_green,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Image.asset(
-                'images/77.png',
-                height: 300,
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
+      body: SingleChildScrollView( // Ajout du SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'images/77.png',
+                  height: 300,
                 ),
               ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
-                ),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _confirmPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Confirm Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock_outline),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
-                ),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 30),
-            Center(
-              child: SizedBox(
-                width: 700,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => _performSignup(context),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue.shade900,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nom complet',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
                   ),
-                  child: const Text('Signup'),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 15),
+              TextField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Numéro de téléphone',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.phone),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _confirmPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Confirmer le mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock_outline),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: SizedBox(
+                  width: 700,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () => _performSignup(context),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.blue.shade900,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text('S\'inscrire'),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

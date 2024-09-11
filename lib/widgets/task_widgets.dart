@@ -70,6 +70,20 @@ class _Task_WidgetState extends State<Task_Widget> {
     }
   }
 
+  // Méthode pour obtenir la couleur en fonction de la priorité
+  Color getPriorityColor(String priority) {
+    switch (priority) {
+      case 'Haute':
+        return Colors.red; // Couleur rouge pour haute priorité
+      case 'Moyenne':
+        return Colors.orange; // Couleur orange pour priorité moyenne
+      case 'Faible':
+        return Colors.green; // Couleur verte pour basse priorité
+      default:
+        return Colors.grey; // Couleur par défaut pour les priorités non spécifiées
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDone = widget._note.isDon;
@@ -112,11 +126,11 @@ class _Task_WidgetState extends State<Task_Widget> {
                             Text(
                               widget._note.title,
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 10),
+                            SizedBox(width: 180),
                             GestureDetector(
                               onTap: () {
                                 _selectDateTime(context); // Appel de la fonction de sélection de la date et de l'heure
@@ -125,7 +139,7 @@ class _Task_WidgetState extends State<Task_Widget> {
                                 width: 20,
                                 height: 20,
                                 decoration: BoxDecoration(
-                                  color: Colors.orange,
+                                  color: Colors.yellow,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Icon(
@@ -137,6 +151,7 @@ class _Task_WidgetState extends State<Task_Widget> {
                             ),
                           ],
                         ),
+                        
                         Checkbox(
                           activeColor: custom_green,
                           value: isDone,
@@ -148,8 +163,11 @@ class _Task_WidgetState extends State<Task_Widget> {
                                 .isdone(widget._note.id, isDone);
                           },
                         )
+                        
                       ],
+
                     ),
+                    
                     Text(
                       widget._note.subtitle,
                       style: TextStyle(
@@ -159,7 +177,21 @@ class _Task_WidgetState extends State<Task_Widget> {
                       ),
                     ),
                     Spacer(),
-                    edit_time()
+                    Row(
+                      children: [
+                        // Affichage de la couleur de priorité
+                        Container(
+                          width: 18,
+                          height: 18,
+                          decoration: BoxDecoration(
+                            color: getPriorityColor(widget._note.priority ?? 'Moyenne'),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        edit_time()
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -176,7 +208,7 @@ class _Task_WidgetState extends State<Task_Widget> {
       child: Row(
         children: [
           Container(
-            width: 90,
+            width: 70,
             height: 28,
             decoration: BoxDecoration(
               color: custom_green,
@@ -184,18 +216,18 @@ class _Task_WidgetState extends State<Task_Widget> {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+                horizontal: 8,
                 vertical: 6,
               ),
               child: Row(
                 children: [
                   Image.asset('images/icon_time.png'),
-                  SizedBox(width: 10),
+                  SizedBox(width: 5),
                   Text(
                     widget._note.time,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
+                      fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

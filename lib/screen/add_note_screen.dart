@@ -1,14 +1,13 @@
-
 import 'package:asana/const/colors.dart';
 import 'package:asana/data/firestor.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
 final firebaseApp = Firebase.app();
 final rtdb = FirebaseDatabase.instanceFor(
     app: firebaseApp,
     databaseURL: 'https://todo-3aa81-default-rtdb.firebaseio.com/');
-
 
 class Add_creen extends StatefulWidget {
   const Add_creen({super.key});
@@ -23,7 +22,10 @@ class _Add_creenState extends State<Add_creen> {
 
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
+
   int indexx = 0;
+  String selectedPriority = 'Moyenne'; // Par défaut, la priorité est 'Moyenne'
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +37,8 @@ class _Add_creenState extends State<Add_creen> {
             title_widgets(),
             const SizedBox(height: 20),
             subtite_wedgite(),
+            const SizedBox(height: 20),
+            priorityDropdown(), // Ajout du menu déroulant pour la priorité
             const SizedBox(height: 20),
             imagess(),
             const SizedBox(height: 20),
@@ -55,10 +59,15 @@ class _Add_creenState extends State<Add_creen> {
             minimumSize: const Size(170, 48),
           ),
           onPressed: () {
-            Firestore_Datasource().AddNote(subtitle.text, title.text, indexx);
+            Firestore_Datasource().AddNote(
+              subtitle.text,
+              title.text,
+              indexx,
+              selectedPriority, // Passer la priorité sélectionnée
+            );
             Navigator.pop(context);
           },
-          child: const Text('add task'),
+          child: const Text('ajouter une tache'),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -68,9 +77,39 @@ class _Add_creenState extends State<Add_creen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel'),
+          child: const Text('Retour'),
         ),
       ],
+    );
+  }
+
+  Widget priorityDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: custom_green, width: 2.0),
+        ),
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: selectedPriority,
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedPriority = newValue!;
+            });
+          },
+          items: <String>['Haute', 'Moyenne', 'Faible']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
@@ -127,7 +166,7 @@ class _Add_creenState extends State<Add_creen> {
           decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              hintText: 'title',
+              hintText: 'Title',
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(
@@ -162,7 +201,7 @@ class _Add_creenState extends State<Add_creen> {
           style: const TextStyle(fontSize: 18, color: Colors.black),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            hintText: 'subtitle',
+            hintText: 'Subtitle',
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(
