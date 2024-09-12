@@ -24,7 +24,7 @@ class BackgroundImageScreen extends StatelessWidget {
                   Text(
                     'Bienvenue',
                     style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: Colors.white,
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
                     ),
@@ -33,7 +33,7 @@ class BackgroundImageScreen extends StatelessWidget {
                   Text(
                     'Organisez vos tâches efficacement',
                     style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: Colors.white,
                       fontSize: 20,
                       fontStyle: FontStyle.italic,
                     ),
@@ -49,7 +49,7 @@ class BackgroundImageScreen extends StatelessWidget {
                     },
                     child: Text('Commencer'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                       textStyle: TextStyle(fontSize: 20),
                     ),
