@@ -29,7 +29,7 @@ class LoginPage extends StatelessWidget {
       // Show a SnackBar with the error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Login failed:Check your email or password'),
+          content: Text('Login failed: Check your email or password'),
           backgroundColor: Colors.red,
         ),
       );
@@ -45,81 +45,83 @@ class LoginPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: custom_green,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch, // added this line
-          children: <Widget>[
-            Center(
-              // Center the logo
-              child: Image.asset(
-                'images/77.png',
-                height: 300, // adjust the height as needed
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // added padding for better layout
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Center(
+                // Center the logo
+                child: Image.asset(
+                  'images/77.png',
+                  height: 300, // adjust the height as needed
                 ),
               ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-                errorStyle: TextStyle(
-                  color: Colors.redAccent,
+              const SizedBox(height: 15),
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
                 ),
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 30),
-            Center(
-              child: SizedBox(
-                width: 700, // Adjust this to set your desired button width
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => _performLogin(context),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: custom_green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                  errorStyle: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: SizedBox(
+                  width: 300, // Adjust this to set your desired button width
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () => _performLogin(context),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: custom_green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: const Text('Login'),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Vous n'avez pas de compte ?"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                      );
+                    },
+                    child: Text(
+                      'Signup',
+                      style: TextStyle(color: custom_green),
                     ),
                   ),
-                  child: const Text('Login'),
-                ),
+                ],
               ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Vous n'avez pas de compte ?"),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
-                    );
-                  },
-                  child: Text(
-                    'Signup',
-                    style: TextStyle(color: custom_green),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

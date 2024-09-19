@@ -31,19 +31,21 @@ class _Add_creenState extends State<Add_creen> {
     return Scaffold(
       backgroundColor: backgroundColors,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            title_widgets(),
-            const SizedBox(height: 20),
-            subtite_wedgite(),
-            const SizedBox(height: 20),
-            priorityDropdown(), // Ajout du menu déroulant pour la priorité
-            const SizedBox(height: 20),
-            imagess(),
-            const SizedBox(height: 20),
-            button()
-          ],
+        child: SingleChildScrollView( // Wrap with SingleChildScrollView
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              title_widgets(),
+              const SizedBox(height: 20),
+              subtite_wedgite(),
+              const SizedBox(height: 20),
+              priorityDropdown(), // Ajout du menu déroulant pour la priorité
+              const SizedBox(height: 20),
+              imagess(),
+              const SizedBox(height: 20),
+              button()
+            ],
+          ),
         ),
       ),
     );

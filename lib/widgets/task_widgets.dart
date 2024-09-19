@@ -5,11 +5,14 @@ import 'package:asana/screen/edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:asana/main.dart'; // Importez votre instance de notification
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 // ignore: must_be_immutable
 class Task_Widget extends StatefulWidget {
-  Note _note;
+  final Note _note;
   Task_Widget(this._note, {super.key});
 
   @override
@@ -17,6 +20,24 @@ class Task_Widget extends StatefulWidget {
 }
 
 class _Task_WidgetState extends State<Task_Widget> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
+
+  // Initialiser les notifications
+  void _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    tz.initializeTimeZones(); // Initialisation des fuseaux horaires pour planifier des notifications
+  }
+
   // Fonction pour partager une tâche
   void shareTask(String title, String subtitle) {
     Share.share('Check out this task: $title\nSubtitle: $subtitle');
@@ -25,18 +46,22 @@ class _Task_WidgetState extends State<Task_Widget> {
   // Fonction pour planifier une notification
   void scheduleNotification(String title, String body, DateTime scheduledTime) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your_channel_id', 'your_channel_name', 
-      importance: Importance.max, priority: Priority.high,
+      'your_channel_id',
+      'your_channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
     );
 
     var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       0, // ID de la notification
       title, // Titre
       body, // Corps
-      scheduledTime, // Heure planifiée
+      tz.TZDateTime.from(scheduledTime, tz.local), // Heure planifiée convertie en TZDateTime
       platformChannelSpecifics, // Détails de la notification
-      androidAllowWhileIdle: true,
+      androidAllowWhileIdle: true, // Permettre les notifications en veille
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
@@ -48,7 +73,7 @@ class _Task_WidgetState extends State<Task_Widget> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
-    
+
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
@@ -130,7 +155,7 @@ class _Task_WidgetState extends State<Task_Widget> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 180),
+                            SizedBox(width: 100),
                             GestureDetector(
                               onTap: () {
                                 _selectDateTime(context); // Appel de la fonction de sélection de la date et de l'heure
@@ -151,7 +176,6 @@ class _Task_WidgetState extends State<Task_Widget> {
                             ),
                           ],
                         ),
-                        
                         Checkbox(
                           activeColor: custom_green,
                           value: isDone,
@@ -159,21 +183,17 @@ class _Task_WidgetState extends State<Task_Widget> {
                             setState(() {
                               isDone = !isDone;
                             });
-                            Firestore_Datasource()
-                                .isdone(widget._note.id, isDone);
+                            Firestore_Datasource().isdone(widget._note.id, isDone);
                           },
-                        )
-                        
+                        ),
                       ],
-
                     ),
-                    
                     Text(
                       widget._note.subtitle,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey.shade400
+                        color: Colors.grey.shade400,
                       ),
                     ),
                     Spacer(),
@@ -181,15 +201,15 @@ class _Task_WidgetState extends State<Task_Widget> {
                       children: [
                         // Affichage de la couleur de priorité
                         Container(
-                          width: 18,
-                          height: 18,
+                          width: 13,
+                          height: 13,
                           decoration: BoxDecoration(
                             color: getPriorityColor(widget._note.priority ?? 'Moyenne'),
                             shape: BoxShape.circle,
                           ),
                         ),
                         SizedBox(width: 10),
-                        edit_time()
+                        edit_time(),
                       ],
                     ),
                   ],
@@ -208,17 +228,14 @@ class _Task_WidgetState extends State<Task_Widget> {
       child: Row(
         children: [
           Container(
-            width: 70,
-            height: 28,
+            width: 45,
+            height: 20,
             decoration: BoxDecoration(
               color: custom_green,
               borderRadius: BorderRadius.circular(18),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               child: Row(
                 children: [
                   Image.asset('images/icon_time.png'),
@@ -227,7 +244,7 @@ class _Task_WidgetState extends State<Task_Widget> {
                     widget._note.time,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 10,
+                      fontSize: 5,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -235,7 +252,7 @@ class _Task_WidgetState extends State<Task_Widget> {
               ),
             ),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 10),
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -243,21 +260,18 @@ class _Task_WidgetState extends State<Task_Widget> {
               ));
             },
             child: Container(
-              width: 90,
-              height: 28,
+              width: 50,
+              height: 20,
               decoration: BoxDecoration(
                 color: Color(0xffE2F6F1),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 child: Row(
                   children: [
                     Image.asset('images/icon_edit.png'),
-                    SizedBox(width: 10),
+                    SizedBox(width: 5),
                     Text(
                       'Edit',
                       style: TextStyle(
@@ -276,30 +290,27 @@ class _Task_WidgetState extends State<Task_Widget> {
               shareTask(widget._note.title, widget._note.subtitle);
             },
             child: Container(
-              width: 70, // Réduction de la largeur du bouton de partage
-              height: 24, // Réduction de la hauteur du bouton de partage
+              width: 40, // Réduction de la largeur du bouton de partage
+              height: 20, // Réduction de la hauteur du bouton de partage
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: const Color.fromARGB(255, 231, 9, 175),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Centrage du contenu
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.share, color: Colors.white, size: 15), // Réduction de la taille de l'icône
-                    SizedBox(width: 6),
-                    Text(
-                      'Share',
-                      style: TextStyle(
-                        fontSize: 8, // Réduction de la taille du texte
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    Icon(Icons.share, color: Colors.white, size: 16), // Icône de partage
+                    SizedBox(width: 4),
+                    // // Text(
+                    // //   'Share',
+                    // //   style: TextStyle(
+                    // //     color: Colors.white,
+                    // //     fontSize: 5,
+                    // //     fontWeight: FontWeight.bold,
+                    // //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -323,4 +334,5 @@ class _Task_WidgetState extends State<Task_Widget> {
       ),
     );
   }
+
 }
